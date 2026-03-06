@@ -66,6 +66,7 @@ export function RegisterForm({
               <Field>
                 <Button
                   variant="outline"
+                  disabled={isPending}
                   type="button"
                   onClick={() => signIn("google", { redirectTo: "/dashboard" })}
                 >
@@ -75,7 +76,14 @@ export function RegisterForm({
                       fill="currentColor"
                     />
                   </svg>
-                  Register with Google
+                  {isPending ? (
+                    <>
+                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Registering...
+                    </>
+                  ) : (
+                    "Register with Google"
+                  )}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">

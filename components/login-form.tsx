@@ -1,5 +1,6 @@
 //components\login-form.tsx
 "use client";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const credentialsLogin = async (formData: FormData) => {
     const email = formData.get("email") as string;
@@ -35,19 +37,29 @@ export function LoginForm({
     if (typeof email !== "string" || typeof password !== "string") {
       return;
     }
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    setIsLoading(true);
 
-    console.log("Login Res: ", res);
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (res?.ok && res?.error === undefined) {
-      router.push("/dashboard");
-    } else {
-      console.log(res);
-      toast.error("Credentials Error!");
+      console.log("Login Res: ", res);
+
+      if (res?.ok && !res?.error) {
+        toast.success("Login successful!");
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        toast.error("Invalid credentials. Please try again.");
+        setIsLoading(false); // 4. Error hole loading bondho korun jate abar try kora jay
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+      setIsLoading(false);
     }
   };
 
@@ -63,9 +75,13 @@ export function LoginForm({
             <FieldGroup>
               <Field>
                 <Button
-                  onClick={() => signIn("google", { redirectTo: "/dashboard" })}
+                  onClick={() => {
+                    setIsLoading(true);
+                    signIn("google", { redirectTo: "/dashboard" });
+                  }}
                   variant="outline"
                   type="button"
+                  disabled={isLoading}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -102,7 +118,16 @@ export function LoginForm({
                 <Input id="password" name="password" type="password" required />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Logging in...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <Link href="/register">Sign up</Link>
