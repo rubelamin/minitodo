@@ -2,7 +2,7 @@
 
 A modern, full-stack task management application built with **Next.js 16**, **tRPC**, **Prisma**, and **NextAuth.js**. Designed for simplicity, performance, and a delightful user experience.
 
-> **Live on Vercel** — This project is deployed and hosted on [Vercel](https://simplytodo.vercel.app).
+> **Live on Vercel** — This project is deployed and hosted on [Vercel](https://minitodo-six.vercel.app).
 
 ---
 
