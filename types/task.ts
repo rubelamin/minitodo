@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 
 export type Task = {
   title: string;
+  id: string;
   status: TaskStatus;
   createdAt: Date;
   userId?: string;
